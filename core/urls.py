@@ -4,5 +4,5 @@ from core import views
 
 
 urlpatterns = [
-    path('', views.ArticleListVIEW.as_view())
+    # path('', views.ArticleListVIEW.as_view())
 ]
