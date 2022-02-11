@@ -12,6 +12,7 @@ python-dotenv = "*"
 dj-database-url = "*"
 whitenoise = "*"
 pillow = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
