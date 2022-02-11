@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.utils.timezone import now
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
@@ -47,7 +48,7 @@ class Article(models.Model):
     description = models.CharField(max_length=1027, verbose_name='Descriptions')
     body = models.TextField(verbose_name='Body')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Author')
-    created_at = models.DateTimeField(default=datetime.now(), editable=False)
+    created_at = models.DateTimeField(default=now(), editable=False)
     image = models.ImageField(
         upload_to=get_path_upload_article_img,
         blank=True,
