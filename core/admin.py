@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from core.models import CustomUser, Article
+
+
+admin.site.register(CustomUser)
+admin.site.register(Article)
+
+# @admin.register(CustomUser):
+# class CustomUserAdmin:
+#     ...
