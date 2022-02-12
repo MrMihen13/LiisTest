@@ -13,6 +13,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     ROLE = [('subscriber', 'Subscriber'), ('author', 'Author')]
 
     email = models.EmailField(verbose_name='Email', db_index=True, unique=True)
+    username = models.CharField(verbose_name='username', db_index=True, max_length=255, unique=True)
     first_name = models.CharField(verbose_name='First name', max_length=30, null=True, blank=True)
     last_name = models.CharField(verbose_name='Last name', max_length=150, null=True, blank=True)
     role = models.CharField(choices=ROLE, max_length=10, verbose_name='Role', default='subscriber')
@@ -28,7 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     def __str__(self):
         return self.email
