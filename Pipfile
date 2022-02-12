@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 django = "==3.2.12"
 djangorestframework = "*"
-djoser = "*"
 gunicorn = "*"
 python-dotenv = "*"
 dj-database-url = "*"
