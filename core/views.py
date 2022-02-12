@@ -57,7 +57,7 @@ class ArticleView(generics.GenericAPIView):
 
 
 class ArticleEditApiView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly, IsAuthorUser)
     serializer_class = ArticleEditSerializer
     queryset = Article.objects.all()
 
