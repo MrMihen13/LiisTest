@@ -12,7 +12,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ['title', 'description', 'body', 'author_name', 'created_dt', 'image']
+        fields = ['title', 'description', 'body', 'image', 'author_name', 'created_dt']
 
 
 class ArticleEditSerializer(serializers.ModelSerializer):
@@ -24,12 +24,12 @@ class ArticleEditSerializer(serializers.ModelSerializer):
 class AuthorRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         min_length=8, label='Password', style={'input_type': 'password'},
-        validators=[get_password_validators, password_validator], required=False, write_only=True)
+        validators=[password_validator], required=False, write_only=True)
     password2 = serializers.CharField(min_length=8, label='Repeat password', style={'input_type': 'password'}, required=False, write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'password2']
+        fields = ['email', 'first_name', 'last_name', 'avatar', 'password', 'password2']
 
     def create(self, validated_data):
         password = validated_data['password']
@@ -54,7 +54,7 @@ class SubscriberRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'password2']
+        fields = ['email', 'first_name', 'last_name', 'avatar', 'password', 'password2']
 
     def create(self, validated_data):
         password = validated_data['password']

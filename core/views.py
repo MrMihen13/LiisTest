@@ -7,32 +7,35 @@ from core.serializers import (
 from core.permissions import IsAuthorUser, IsSubscriberUser, IsOwnerOrReadOnly
 
 
-class ArticleCreateView(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated, IsAuthorUser)
-    serializer_class = ArticleEditSerializer
-    queryset = Article.objects.all()
-
-
-class ClosedArticleListView(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticated, IsSubscriberUser)
-    serializer_class = ArticleListSerializer
-    queryset = Article.objects.filter(is_open=False)
-
-
 class ArticleListView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArticleListSerializer
-    queryset = Article.objects.all()
 
+    def get(self, request, *args, **kwargs):
+        articles = Article.objects.all()
 
-class OpenArticleListView(generics.ListAPIView):
-    permission_classes = (permissions.IsAuthenticated, IsSubscriberUser)
-    serializer_class = ArticleListSerializer
-    queryset = Article.objects.filter(is_open=True)
+        if request.user.role == 'subscriber':
+
+            serializer = self.serializer_class(articles, many=True)
+
+            return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+
+        else:
+
+            articles = articles.filter(is_open=True)
+            serializer = self.serializer_class(articles, many=True)
+
+            return response.Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class ArticleEditApiView(generics.RetrieveUpdateDestroyAPIView):
     permissions = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    serializer_class = ArticleEditSerializer
+    queryset = Article.objects.all()
+
+
+class ArticleCreateView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated, IsAuthorUser)
     serializer_class = ArticleEditSerializer
     queryset = Article.objects.all()
 
@@ -43,11 +46,13 @@ class AuthorRegistrationView(generics.GenericAPIView):
     queryset = CustomUser.objects.all()
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
+
         serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-        return response.Response(serializer.data)
+
+        return response.Response(serializer.data, status=status.HTTP_200_OK)  # TODO Create redirect to article page
 
 
 class SubscriberRegistrationView(generics.GenericAPIView):
@@ -56,8 +61,10 @@ class SubscriberRegistrationView(generics.GenericAPIView):
     queryset = CustomUser.objects.all()
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
+
         serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-        return response.Response(serializer.data)
+
+        return response.Response(serializer.data, status=status.HTTP_200_OK)  # TODO Create redirect to article page
