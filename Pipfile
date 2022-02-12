@@ -12,7 +12,7 @@ python-dotenv = "*"
 dj-database-url = "*"
 whitenoise = "*"
 pillow = "*"
-psycopg2 = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
