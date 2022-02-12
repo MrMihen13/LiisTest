@@ -150,3 +150,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny'
     ]
 }
+
+# login
+
+LOGIN_REDIRECT_URL = '/articles'

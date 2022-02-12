@@ -11,7 +11,7 @@ def image_size_validator(file_obj):
         raise ValidationError(f'Максимальной размер файла {megabyte_limit}MB')
 
 
-def password_validator(password):
+def custom_password_validator(password):
 
     if not any(c.isdigit() for c in password):
         raise ValidationError('Password must container at least 1 digits.')
