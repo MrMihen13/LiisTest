@@ -1,6 +1,6 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, response, status
 
-from core.models import Article
+from core.models import Article, CustomUser
 from core.serializers import (
     ArticleListSerializer, ArticleEditSerializer, AuthorRegistrationSerializer, SubscriberRegistrationSerializer,
 )
@@ -8,15 +8,27 @@ from core.permissions import IsAuthorUser, IsSubscriberUser, IsOwnerOrReadOnly
 
 
 class ArticleCreateView(generics.ListCreateAPIView):
-    serializer_class = ArticleEditSerializer
     permission_classes = (permissions.IsAuthenticated, IsAuthorUser)
+    serializer_class = ArticleEditSerializer
     queryset = Article.objects.all()
 
 
-class ArticleListView(generics.ListAPIView):
-    permissions = (permissions.IsAuthenticated, IsSubscriberUser)
+class ClosedArticleListView(generics.ListAPIView):
+    permission_classes = (permissions.IsAuthenticated, IsSubscriberUser)
     serializer_class = ArticleListSerializer
-    queryset = Article.objects.all()  # TODO Create different queryset for different role
+    queryset = Article.objects.filter(is_open=False)
+
+
+class ArticleListView(generics.ListAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = ArticleListSerializer
+    queryset = Article.objects.all()
+
+
+class OpenArticleListView(generics.ListAPIView):
+    permission_classes = (permissions.IsAuthenticated, IsSubscriberUser)
+    serializer_class = ArticleListSerializer
+    queryset = Article.objects.filter(is_open=True)
 
 
 class ArticleEditApiView(generics.RetrieveUpdateDestroyAPIView):
@@ -25,17 +37,27 @@ class ArticleEditApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Article.objects.all()
 
 
-class RegistrationAuthorView(generics.GenericAPIView):
+class AuthorRegistrationView(generics.GenericAPIView):
     permission_classes = (permissions.AllowAny, )
-    serializer_class = ...  # TODO create serializer for registration Author
+    serializer_class = AuthorRegistrationSerializer
+    queryset = CustomUser.objects.all()
 
     def post(self, request, *args, **kwargs):
-        ...  # TODO create logic fot registration Author
+        print(request.data)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return response.Response(serializer.data)
 
 
-class RegistrationSubscriberView(generics.GenericAPIView):
+class SubscriberRegistrationView(generics.GenericAPIView):
     permission_classes = (permissions.AllowAny,)
-    serializer_class = ...  # TODO create serializer for registration Subscriber
+    serializer_class = SubscriberRegistrationSerializer
+    queryset = CustomUser.objects.all()
 
     def post(self, request, *args, **kwargs):
-        ...  # TODO create logic fot registration Subscriber
+        print(request.data)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return response.Response(serializer.data)
